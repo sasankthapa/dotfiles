@@ -1,4 +1,3 @@
-require'snips'
   local nvim_lsp = require('lspconfig')
 
 -- Use an on_attach function to only map the following keys
@@ -60,7 +59,7 @@ end
     },
     sources = {
       { name = 'nvim_lsp' },
-      -- { name = 'luasnip' },
+      { name = 'luasnip' },
     }
   })
 

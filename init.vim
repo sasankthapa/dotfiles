@@ -1,5 +1,3 @@
-syntax on
-
 set exrc
 set relativenumber
 set nohlsearch
@@ -16,7 +14,6 @@ set noswapfile
 set nobackup
 set undodir=~/.vim/undodir
 set undofile
-set incsearch
 set termguicolors
 set scrolloff=8
 set noshowmode
@@ -31,6 +28,7 @@ set colorcolumn=80
 
 call plug#begin('~/.vim/plugged')
 
+Plug 'tpope/vim-fugitive'
 Plug 'mbbill/undotree'
 
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -38,10 +36,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'ojroques/nvim-lspfuzzy'
 
 Plug 'gruvbox-community/gruvbox'
-
-" tree sitter
+Plug 'Iron-E/nvim-highlite'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
-plug 'tree-sitter/tree-sitter-typescript'
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -155,7 +151,7 @@ end
   -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-local servers = { 'tsserver' }
+local servers = { 'tsserver','tailwindcss' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -166,9 +162,6 @@ for _, lsp in ipairs(servers) do
 end
 
 --tree sitter
-require('tree-sitter-typescript').typescript; // TypeScript grammar
-require('tree-sitter-typescript').tsx; // TSX grammar
-
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   ignore_install = { "javascript" }, -- List of parsers to ignore installing
@@ -180,30 +173,28 @@ require'nvim-treesitter.configs'.setup {
     -- Using this option may slow down your editor, and you may see some duplicate highlights.
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
-  },
-}
 
-require'nvim-treesitter.configs'.setup {
+  },
   incremental_selection = {
-    enable = true,
+    enable = false,
     keymaps = {
       init_selection = "gnn",
       node_incremental = "grn",
       scope_incremental = "grc",
       node_decremental = "grm",
+
     },
+    indent ={
+	    enable = false,
+    }
   },
-}
 
-require'nvim-treesitter.configs'.setup {
-  indent = {
-    enable = true
-  }
-}
 
+}
 EOF
 
-colorscheme gruvbox
+colorscheme highlite
+
 let mapleader=' '
 
 nnoremap <leader>h :wincmd h<CR>
@@ -218,8 +209,10 @@ nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 nnoremap <leader>bd :LspDiagnosticsAll<CR>
 nnoremap <leader>hh :cd %<CR>
 nnoremap <leader>rc :edit ~/.config/nvim/init.vim<CR>
-nnoremap <leader>ff :Files<CR>
+nnoremap <leader>fF :Files<CR>
+nnoremap <leader>ff :GFiles<CR>
 nnoremap <leader>tr :vertical resize -200<CR>
 nnoremap <leader>tl :vertical resize 200<CR>
 nnoremap <leader>tt :vertical resize 100<CR>
+nnoremap gb :ls<CR>:b
 
